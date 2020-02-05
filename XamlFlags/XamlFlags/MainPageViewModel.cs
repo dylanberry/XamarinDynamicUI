@@ -28,23 +28,30 @@ namespace XamlFlags
             OnSelectType(Options.First());
         }
 
-        private void OnSelectType(OptionViewModel widget)
+        private void OnSelectType(OptionViewModel option)
         {
-            Options.ForEach(w => { w.IsEnabled = false; w.IsSelected = false; });
-            Options.Where(w => w.Variety == widget.Variety)
-                .ForEach(w => { w.IsEnabled = true; });
-            Options.Where(w => w.Category == widget.Category)
-                .ForEach(w => { w.IsEnabled = true; });
-            widget.IsSelected = true;
+            if (option is null) return;
+
+            // reset all options
+            Options.ForEach(o => { o.IsEnabled = false; o.IsSelected = false; });
+
+            // enable options of the same variety (ie. A,B)
+            Options.Where(o => o.Variety == option.Variety)
+                .ForEach(o => { o.IsEnabled = true; });
+
+            // enable options of the same category (ie. 1,2,3)
+            Options.Where(o => o.Category == option.Category)
+                .ForEach(o => { o.IsEnabled = true; });
+
+            // select the current option
+            option.IsSelected = true;
         }
     }
 
     public class OptionViewModel : BindableBase
     {
         public string Value { get; set; }
-
         public string Variety { get; set; }
-
         public string Category { get; set; }
 
         private bool _isEnabled;
