@@ -1,0 +1,59 @@
+﻿<ContentPage>
+    <StackLayout>
+        @foreach (var option in Options)
+        {
+            <Frame CornerRadius="4" Padding="0">
+                <StackLayout Orientation="StackOrientation.Horizontal" Padding="5"
+                             BackgroundColor="(option.IsEnabled ? (option.IsSelected ? Color.DarkBlue : Color.White) : Color.DarkGray)"
+                             IsEnabled="option.IsEnabled">
+                    <Button Text="Select" OnClick="(() => OnSelectType(option))" />
+                    <Label Text="✓"
+                           TextColor="Color.White"
+                           FontSize="12"
+                           VerticalOptions="LayoutOptions.Center" HorizontalOptions="LayoutOptions.EndAndExpand"
+                           IsVisible="option.IsSelected" />
+                    <Label Text="@option.Value" VerticalOptions="LayoutOptions.Center" HorizontalOptions="LayoutOptions.EndAndExpand"
+                           TextColor="(option.IsEnabled ? (option.IsSelected ? Color.White : Color.Black) : Color.LightGray)" />
+                </StackLayout>
+            </Frame>
+        }
+    </StackLayout>
+</ContentPage>
+
+@code
+{
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+        OnSelectType(Options.First());
+    }
+
+    public List<Option> Options { get; } = new List<Option>
+    {
+        new Option { Value = "Option 1-A", Category = "1", Variety = "A" },
+        new Option { Value = "Option 1-B", Category = "1", Variety = "B" },
+        new Option { Value = "Option 2-A", Category = "2", Variety = "A" },
+        new Option { Value = "Option 2-B", Category = "2", Variety = "B" },
+        new Option { Value = "Option 3-A", Category = "3", Variety = "A" },
+        new Option { Value = "Option 3-B", Category = "3", Variety = "B" },
+    };
+
+    private void OnSelectType(Option option)
+    {
+        if (option is null) return;
+
+        // reset all options
+        Options.ForEach(o => { o.IsEnabled = false; o.IsSelected = false; });
+
+        // enable options of the same variety (ie. A,B)
+        Options.Where(o => o.Variety == option.Variety)
+            .ForEach(o => { o.IsEnabled = true; });
+
+        // enable options of the same category (ie. 1,2,3)
+        Options.Where(o => o.Category == option.Category)
+            .ForEach(o => { o.IsEnabled = true; });
+
+        // select the current option
+        option.IsSelected = true;
+    }
+}
