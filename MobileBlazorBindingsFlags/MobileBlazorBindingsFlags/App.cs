@@ -9,7 +9,7 @@ namespace MobileBlazorBindingsFlags
     {
         public App()
         {
-            var host = Host.CreateDefaultBuilder()
+            var host = MobileBlazorBindingsHost.CreateDefaultBuilder()
                 .ConfigureServices((hostContext, services) =>
                 {
                     // Register app-specific services
@@ -17,7 +17,8 @@ namespace MobileBlazorBindingsFlags
                 })
                 .Build();
 
-            host.AddComponent<Main>(parent: this);
+            MainPage = new ContentPage();
+            host.AddComponent<Main>(parent: MainPage); // Change 'HelloWorld' to your app's main UI page
         }
 
         protected override void OnStart()
